@@ -32,6 +32,7 @@ Plug 'hrsh7th/cmp-buffer', {'branch': 'main'}
 Plug 'hrsh7th/cmp-path', {'branch': 'main'}
 Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
 Plug 'ray-x/lsp_signature.nvim'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 " Only because nvim-cmp _requires_ snippets
 Plug 'hrsh7th/cmp-vsnip', {'branch': 'main'}
@@ -165,6 +166,9 @@ lspconfig.ccls.setup {
     },
     init_options = {
         compilationDatabaseDirectory = "build";
+        highlight = {
+            lsRanges = true;
+        }
     },
     capabilities = capabilities,
 }
