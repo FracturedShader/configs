@@ -150,9 +150,9 @@ lspconfig.rust_analyzer.setup {
         allFeatures = true,
       },
       completion = {
-	postfix = {
-	  enable = false,
-	},
+        postfix = {
+          enable = false,
+        },
       },
     },
   },
