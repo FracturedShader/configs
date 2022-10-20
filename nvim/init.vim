@@ -218,7 +218,7 @@ lspconfig.ccls.setup {
         }
     },
     root_dir = lspconfig.util.root_pattern(
-        ".ccls-root", ".git", "compile_commands.json", ".ccls", "build", "bin");
+        ".ccls-root", "compile_commands.json", ".ccls", "build", "bin");
     capabilities = capabilities,
 }
 
