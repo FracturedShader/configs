@@ -12,6 +12,7 @@ call plug#begin()
 Plug 'ciaranm/securemodelines'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-fugitive/'
 
 " GUI enhancements
 Plug 'morhetz/gruvbox'
