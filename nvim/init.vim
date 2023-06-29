@@ -17,7 +17,6 @@ Plug 'tpope/vim-fugitive/'
 " GUI enhancements
 Plug 'morhetz/gruvbox'
 Plug 'itchyny/lightline.vim'
-Plug 'machakann/vim-highlightedyank'
 Plug 'andymass/vim-matchup'
 
 " Fuzzy finder
@@ -337,9 +336,6 @@ let g:sneak#s_next = 1
 let g:vim_markdown_new_list_item_indent = 0
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_frontmatter = 1
-set printfont=:h10
-set printencoding=utf-8
-set printoptions=paper:letter
 " Always draw sign column. Prevent buffer moving when adding/deleting sign.
 set signcolumn=yes
 
@@ -476,6 +472,9 @@ noremap <leader>m ct_
 " =============================================================================
 " # Autocommands
 " =============================================================================
+
+" Highlight yanked text
+au TextYankPost * silent! lua vim.highlight.on_yank()
 
 " Prevent accidental writes to buffers that shouldn't be edited
 autocmd BufRead *.orig set readonly
