@@ -320,6 +320,18 @@ let g:go_fmt_fail_silently = 1
 let g:go_fmt_command = "goimports"
 let g:go_bin_path = expand("~/dev/go/bin")
 
+" Debugging with shift/ctrl F keys immediately after normal ones
+let g:termdebug_wide = 1
+map <F5> :Continue<CR>
+map <F17> :Stop<CR>
+map <F29> :Run 
+map <F6> :Over<CR>
+map <F18> :Step<CR>
+map <F7> :Until
+map <F19> :Finish
+map <F8> :Break<CR>
+map <F20> :Clear<CR>
+
 " =============================================================================
 " # Editor settings
 " =============================================================================
