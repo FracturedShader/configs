@@ -322,15 +322,20 @@ let g:go_bin_path = expand("~/dev/go/bin")
 
 " Debugging with shift/ctrl F keys immediately after normal ones
 let g:termdebug_wide = 1
-map <F5> :Continue<CR>
-map <F17> :Stop<CR>
-map <F29> :Run 
-map <F6> :Over<CR>
-map <F18> :Step<CR>
-map <F7> :Until<CR>
-map <F19> :Finish<CR>
-map <F8> :Break<CR>
-map <F20> :Clear<CR>
+nmap <F5> :Continue<CR>
+nmap <F17> :Stop<CR>
+nmap <F29> :Run 
+nmap <F6> :Over<CR>
+nmap <F18> :Step<CR>
+nmap <F7> :Until<CR>
+nmap <F19> :Finish<CR>
+nmap <F8> :Break<CR>
+nmap <F20> :Clear<CR>
+nmap <leader>di :Evaluate<CR>
+nmap <leader>dg :Gdb<CR>
+nmap <leader>dp :Program<CR>
+nmap <leader>ds :Source<CR>
+nmap <leader>da :Asm<CR>
 
 " =============================================================================
 " # Editor settings
