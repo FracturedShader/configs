@@ -327,8 +327,8 @@ map <F17> :Stop<CR>
 map <F29> :Run 
 map <F6> :Over<CR>
 map <F18> :Step<CR>
-map <F7> :Until
-map <F19> :Finish
+map <F7> :Until<CR>
+map <F19> :Finish<CR>
 map <F8> :Break<CR>
 map <F20> :Clear<CR>
 
