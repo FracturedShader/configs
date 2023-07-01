@@ -165,7 +165,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-i>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>g', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<space>a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
@@ -320,6 +320,23 @@ let g:go_fmt_fail_silently = 1
 let g:go_fmt_command = "goimports"
 let g:go_bin_path = expand("~/dev/go/bin")
 
+" Debugging with shift/ctrl F keys immediately after normal ones
+let g:termdebug_wide = 1
+nmap <F5> :Continue<CR>
+nmap <F17> :Stop<CR>
+nmap <F29> :Run 
+nmap <F6> :Over<CR>
+nmap <F18> :Step<CR>
+nmap <F7> :Until<CR>
+nmap <F19> :Finish<CR>
+nmap <F8> :Break<CR>
+nmap <F20> :Clear<CR>
+nmap <leader>di :Evaluate<CR>
+nmap <leader>dg :Gdb<CR>
+nmap <leader>dp :Program<CR>
+nmap <leader>ds :Source<CR>
+nmap <leader>da :Asm<CR>
+
 " =============================================================================
 " # Editor settings
 " =============================================================================
@@ -473,6 +490,9 @@ noremap <leader>m ct_
 " =============================================================================
 " # Autocommands
 " =============================================================================
+
+" Highlight yanked text
+au TextYankPost * silent! lua vim.highlight.on_yank()
 
 " Prevent accidental writes to buffers that shouldn't be edited
 autocmd BufRead *.orig set readonly
