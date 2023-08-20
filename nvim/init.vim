@@ -1,9 +1,8 @@
 " =============================================================================
 " # PLUGINS
 " =============================================================================
-" Load vundle
+" Load plugins with vim-plug
 set nocompatible
-filetype off
 call plug#begin()
 
 " Make sure you use single quotes
@@ -26,13 +25,13 @@ Plug 'junegunn/fzf.vim'
 
 " Semantic language support
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/lsp_extensions.nvim'
 Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
 Plug 'hrsh7th/cmp-buffer', {'branch': 'main'}
 Plug 'hrsh7th/cmp-path', {'branch': 'main'}
 Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'simrat39/rust-tools.nvim'
 
 " Only because nvim-cmp _requires_ snippets
 Plug 'hrsh7th/cmp-vsnip', {'branch': 'main'}
@@ -70,169 +69,7 @@ end
 hi Normal ctermbg=NONE
 
 " LSP configuration
-lua << END
-local cmp = require'cmp'
-
-local lspconfig = require'lspconfig'
-cmp.setup({
-  snippet = {
-    -- REQUIRED by nvim-cmp. get rid of it once we can
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
-    ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
-    ['<C-n>'] = cmp.mapping({
-        c = function()
-            if cmp.visible() then
-                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            else
-                vim.api.nvim_feedkeys(t('<Down>'), 'n', true)
-            end
-        end,
-        i = function(fallback)
-            if cmp.visible() then
-                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            else
-                fallback()
-            end
-        end
-    }),
-    ['<C-p>'] = cmp.mapping({
-        c = function()
-            if cmp.visible() then
-                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            else
-                vim.api.nvim_feedkeys(t('<Up>'), 'n', true)
-            end
-        end,
-        i = function(fallback)
-            if cmp.visible() then
-                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            else
-                fallback()
-            end
-        end
-    }),
-    ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-8), {'i', 'c'}),
-    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(8), {'i', 'c'}),
-    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
-    ['<C-e>'] = cmp.mapping({ i = cmp.mapping.close(), c = cmp.mapping.close() }),
-    ['<Tab>'] = cmp.mapping({
-        i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-        c = function(fallback)
-            if cmp.visible() then
-                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })
-            else
-                fallback()
-            end
-        end
-    }),
-  },
-  sources = cmp.config.sources({
-    -- TODO: currently snippets from lsp end up getting prioritized -- stop that!
-    { name = 'nvim_lsp' },
-  }, {
-    { name = 'path' },
-  }),
-  experimental = {
-    ghost_text = true,
-  },
-})
-
--- Enable completing paths in :
-cmp.setup.cmdline(':', {
-  sources = cmp.config.sources({
-    { name = 'path' }
-  })
-})
-
--- Setup lspconfig.
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  --Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<space>g', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-
-  -- Get signatures (and _only_ signatures) when in argument lists.
-  require "lsp_signature".on_attach({
-    doc_lines = 0,
-    handler_opts = {
-      border = "none"
-    },
-  })
-end
-
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-lspconfig.rust_analyzer.setup {
-  on_attach = on_attach,
-  flags = {
-    debounce_text_changes = 150,
-  },
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = {
-        allFeatures = true,
-      },
-      completion = {
-        postfix = {
-          enable = false,
-        },
-      },
-    },
-  },
-  capabilities = capabilities,
-}
-
-lspconfig.ccls.setup {
-    on_attach = on_attach,
-    flags = {
-        debounce_text_changes = 150,
-    },
-    init_options = {
-        compilationDatabaseDirectory = "build";
-        highlight = {
-            lsRanges = true;
-        }
-    },
-    root_dir = lspconfig.util.root_pattern(
-        ".ccls-root", "compile_commands.json", ".ccls", "build", "bin");
-    capabilities = capabilities,
-}
-
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = true,
-    signs = true,
-    update_in_insert = true,
-  }
-)
-END
-
-" Enable type inlay hints
-autocmd CursorHold,CursorHoldI *.rs :lua require'lsp_extensions'.inlay_hints{ only_current_line = true }
+exe 'source ' . stdpath('config') . '/lsp.vim'
 
 " Plugin settings
 " Secure modelines
@@ -250,8 +87,13 @@ let g:secure_modelines_allowed_items = [
                 \ ]
 
 " Gruvbox
+augroup gruvbox
+autocmd!
+
 let g:gruvbox_contrast_dark = 'hard'
 autocmd vimenter * ++nested colorscheme gruvbox
+
+augroup END
 
 " Lightline
 let g:lightline = {
@@ -337,6 +179,14 @@ nmap <leader>dp :Program<CR>
 nmap <leader>ds :Source<CR>
 nmap <leader>da :Asm<CR>
 
+" Easier navigation of quickfix list
+nmap <leader>cc :cc<CR>
+nmap <leader>cn :cn<CR>
+nmap <leader>cp :cp<CR>
+nmap <leader>ca :cabove<CR>
+nmap <leader>cb :cbelow<CR>
+nmap <leader>cl :cl<CR>
+
 " =============================================================================
 " # Editor settings
 " =============================================================================
@@ -417,7 +267,6 @@ set colorcolumn=80 " and give me a colored column
 set showcmd " Show (partial) command in status line.
 set mouse=a " Enable mouse usage (all modes) in terminals
 set shortmess+=c " don't give |ins-completion-menu| messages.
-au TextYankPost * silent! lua vim.highlight.on_yank() " Highlight yank
 
 " Show those damn hidden characters
 " Verbose: set listchars=nbsp:¬,eol:¶,extends:»,precedes:«,trail:•
@@ -490,6 +339,8 @@ noremap <leader>m ct_
 " =============================================================================
 " # Autocommands
 " =============================================================================
+augroup file_lang
+autocmd!
 
 " Highlight yanked text
 au TextYankPost * silent! lua vim.highlight.on_yank()
@@ -502,10 +353,8 @@ autocmd BufRead *.pacnew set readonly
 autocmd InsertLeave * set nopaste
 
 " Jump to last edit position on opening file
-if has("autocmd")
-  " https://stackoverflow.com/questions/31449496/vim-ignore-specifc-file-in-autocommand
-  au BufReadPost * if expand('%:p') !~# '\m/\.git/' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
+" https://stackoverflow.com/questions/31449496/vim-ignore-specifc-file-in-autocommand
+au BufReadPost * if expand('%:p') !~# '\m/\.git/' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Follow Rust code style rules
 au Filetype rust set colorcolumn=100
@@ -520,6 +369,8 @@ autocmd BufRead *.xlsx.axlsx set filetype=ruby
 
 " Script plugins
 exe 'autocmd Filetype html,xml,xsl,php source ' . stdpath('config') . '/scripts/closetag.vim'
+
+augroup END
 
 " =============================================================================
 " # Footer
