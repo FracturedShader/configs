@@ -75,6 +75,9 @@ hi Normal ctermbg=NONE
 " LSP configuration
 lua require("lsp-init")
 
+" Debugging configuration
+lua require("dap-cfg")
+
 " Plugin settings
 " Secure modelines
 let g:secure_modelines_allowed_items = [
