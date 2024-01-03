@@ -1,5 +1,5 @@
 # About
-Configurations for [Neovim](https://neovim.io/) requiring at least v0.7.0
+Configurations for [Neovim](https://neovim.io/) requiring at least v0.9.0
 
 Mainly a custom combination of [Jon Gjengset's Neovim configs](https://github.com/jonhoo/configs/tree/master/editor/.config/nvim) and [The Ultimate vimrc](https://github.com/amix/vimrc) with some personal modifications for my workflows and preferences.
 

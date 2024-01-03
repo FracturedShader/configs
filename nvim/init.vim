@@ -49,6 +49,10 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'tikhomirov/vim-glsl'
 
+" Debugging support
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+
 " Initialize plugin system
 call plug#end()
 
@@ -69,7 +73,7 @@ end
 hi Normal ctermbg=NONE
 
 " LSP configuration
-exe 'source ' . stdpath('config') . '/lsp.vim'
+lua require("lsp-init")
 
 " Plugin settings
 " Secure modelines
@@ -161,23 +165,6 @@ let g:go_play_open_browser = 0
 let g:go_fmt_fail_silently = 1
 let g:go_fmt_command = "goimports"
 let g:go_bin_path = expand("~/dev/go/bin")
-
-" Debugging with shift/ctrl F keys immediately after normal ones
-let g:termdebug_wide = 1
-nmap <F5> :Continue<CR>
-nmap <F17> :Stop<CR>
-nmap <F29> :Run 
-nmap <F6> :Over<CR>
-nmap <F18> :Step<CR>
-nmap <F7> :Until<CR>
-nmap <F19> :Finish<CR>
-nmap <F8> :Break<CR>
-nmap <F20> :Clear<CR>
-nmap <leader>di :Evaluate<CR>
-nmap <leader>dg :Gdb<CR>
-nmap <leader>dp :Program<CR>
-nmap <leader>ds :Source<CR>
-nmap <leader>da :Asm<CR>
 
 " Easier navigation of quickfix list
 nmap <leader>cc :cc<CR>
