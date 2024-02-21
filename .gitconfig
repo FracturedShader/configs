@@ -1,0 +1,33 @@
+[push]
+	autosetupremote = true  # for new branches setup remote tracking branch automatically
+	followtags = true       # push tags when pushing commits
+[init]
+	defaultBranch = trunk   # if we have branches, then a trunk is the core
+[merge]
+	conflictstyle = zdiff3  # make merge conflicts contain more info about what changed
+    tool = vimdiff          # I happen to like my NeoVim setup/configs
+	keepbackup = false      # no .orig file since that's already tracked
+[core]
+	pager = delta   # see https://github.com/dandavison/delta
+	editor = nvim   # I happen to like my NeoVim setup/configs
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+[diff]
+    colorMoved = default    # give lines that were moved, but otherwise unchanged, a different color
+	algorithm = histogram   # favor human readable diffs over smaller sizes
+	submodule = log         # more submodule information when diffing
+	tool = difftastic       # see https://difftastic.wilfred.me.uk/
+[status]
+	submoduleSummary = true # more submodule information during status
+[submodule]
+	recurse = true  # automatically recurse submodules for most commands (not clone, ls-files, or branch)
+[mergetool]
+    prompt = true   # Git doesn't seem to wait for NeoVim, so block with a prompt
+[mergetool "vimdiff"]
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED
+[fetch]
+	prune = true        # automatically delete local branches if the remote deleted them
+	prunetags = true    # automatically delete local tags if the remote deleted them
