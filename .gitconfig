@@ -27,7 +27,7 @@
 [mergetool]
     prompt = true   # Git doesn't seem to wait for NeoVim, so block with a prompt
 [mergetool "vimdiff"]
-    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c 'wincmd W' -c 'wincmd J'
 [fetch]
     prune = true        # automatically delete local branches if the remote deleted them
     prunetags = true    # automatically delete local tags if the remote deleted them
