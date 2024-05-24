@@ -50,6 +50,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'tikhomirov/vim-glsl'
 
 " Debugging support
+Plug 'nvim-neotest/nvim-nio'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 
