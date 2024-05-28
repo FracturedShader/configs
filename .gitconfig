@@ -20,6 +20,10 @@
     algorithm = histogram   # favor human readable diffs over smaller sizes
     submodule = log         # more submodule information when diffing
     tool = difftastic       # see https://difftastic.wilfred.me.uk/
+[difftool]
+    prompt = false
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
 [status]
     submoduleSummary = true # more submodule information during status
 [submodule]
@@ -31,3 +35,6 @@
 [fetch]
     prune = true        # automatically delete local branches if the remote deleted them
     prunetags = true    # automatically delete local tags if the remote deleted them
+[alias]
+    dft = difftool
+    dlog = "-c diff.external=difft log -p --ext-diff"
