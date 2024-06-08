@@ -205,9 +205,9 @@ set secure
 set splitright
 set splitbelow
 
-" Permanent undo
-set undodir=~/.vimdid
+" Permanent undo, except for temp files
 set undofile
+au BufWritePre /tmp/* setlocal noundofile
 
 " Decent wildmenu
 set wildmenu
