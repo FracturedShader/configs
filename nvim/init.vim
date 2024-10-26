@@ -24,6 +24,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " Semantic language support
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
 Plug 'hrsh7th/cmp-buffer', {'branch': 'main'}
@@ -46,6 +48,7 @@ Plug 'rhysd/vim-clang-format'
 "Plug 'fatih/vim-go'
 Plug 'dag/vim-fish'
 Plug 'godlygeek/tabular'
+Plug 'kaarmu/typst.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'tikhomirov/vim-glsl'
 
@@ -72,6 +75,9 @@ end
 
 " deal with colors
 hi Normal ctermbg=NONE
+
+" Add Mason hooks
+lua require("mason").setup()
 
 " LSP configuration
 lua require("lsp-init")

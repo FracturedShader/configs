@@ -1,6 +1,10 @@
-local cmp = require'cmp'
+require("mason-lspconfig").setup {
+    ensure_installed = { "tinymist" },
+}
 
+local cmp = require'cmp'
 local lspconfig = require'lspconfig'
+
 cmp.setup({
   snippet = {
     -- REQUIRED by nvim-cmp. get rid of it once we can
@@ -160,4 +164,16 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     update_in_insert = true,
   }
 )
+
+lspconfig.tinymist.setup {
+    on_attach = on_attach,
+    single_file_support = true,
+    root_dir = function()
+        return vim.fn.getcwd()
+    end,
+    settings = {
+        exportPdf = "onDocumentHasTitle", -- Choose onDocumentHasTitle, onType, onSave or never.
+        formatterMode = "typstyle",
+    }
+}
 
