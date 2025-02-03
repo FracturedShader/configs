@@ -5,7 +5,6 @@ Mainly a custom combination of [Jon Gjengset's Neovim configs](https://github.co
 
 # Dependencies
 These config files depend on some things not included here. Namely:
-- [vim-plug](https://github.com/junegunn/vim-plug) for plugin management
 - [fd-find](https://github.com/sharkdp/fd) for ignore-aware file listing
 - [fzf](https://github.com/junegunn/fzf) for fuzzy finding
 - [ripgrep](https://github.com/BurntSushi/ripgrep) for enhanced RegEx search
