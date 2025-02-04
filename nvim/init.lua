@@ -87,10 +87,10 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
 -- make missing : less annoying
 vim.keymap.set('n', ';', ':')
 -- smart window navigation
-vim.keymap.set('n', '<C-j>', '<C-W>j')
-vim.keymap.set('n', '<C-k>', '<C-W>k')
-vim.keymap.set('n', '<C-h>', '<C-W>h')
-vim.keymap.set('n', '<C-l>', '<C-W>l')
+vim.keymap.set('', '<C-j>', '<C-W>j')
+vim.keymap.set('', '<C-k>', '<C-W>k')
+vim.keymap.set('', '<C-h>', '<C-W>h')
+vim.keymap.set('', '<C-l>', '<C-W>l')
 -- easier way to stop searching
 vim.keymap.set({'n', 'v'}, '<leader><cr>', '<cmd>nohlsearch<cr>', { silent = true })
 -- Jump to start and end of line using the home row keys
@@ -102,9 +102,9 @@ vim.keymap.set('', 'L', '$')
 vim.keymap.set('n', '<leader>p', '<cmd>read !wl-paste<cr>')
 vim.keymap.set('n', '<leader>c', '<cmd>w !wl-copy<cr><cr>')
 -- <leader><leader> toggles between buffers
-vim.keymap.set('n', '<leader><leader>', '<c-^>')
+vim.keymap.set({ 'n', 'v' }, '<leader><leader>', '<c-^>')
 -- <leader>, shows/hides hidden characters
-vim.keymap.set('n', '<leader>,', ':set invlist<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>,', ':set invlist<cr>')
 -- always center search results
 vim.keymap.set('n', 'n', 'nzz', { silent = true })
 vim.keymap.set('n', 'N', 'Nzz', { silent = true })
@@ -127,26 +127,28 @@ vim.keymap.set('n', '<right>', ':bn<cr>')
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
 -- close the current buffer
-vim.keymap.set('n', '<leader>bd', '<cmd>bd<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>bd', '<cmd>bd<cr>')
 -- close all buffers
-vim.keymap.set('n', '<leader>ba', '<cmd>bufdo bd<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>ba', '<cmd>bufdo bd<cr>')
 -- navigate buffers directly
-vim.keymap.set('n', '<leader>h', '<cmd>bnext<cr>')
-vim.keymap.set('n', '<leader>l', '<cmd>bprevious<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>h', '<cmd>bnext<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>l', '<cmd>bprevious<cr>')
 -- Useful mappings for managing tabs
-vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<cr>')
-vim.keymap.set('n', '<leader>to', '<cmd>tabonly<cr>')
-vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<cr>')
-vim.keymap.set('n', '<leader>tm', ':tabmove')
+vim.keymap.set({ 'n', 'v' }, '<leader>tn', '<cmd>tabnew<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>to', '<cmd>tabonly<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>tc', '<cmd>tabclose<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>tm', ':tabmove')
 -- Opens a new tab with current buffer's path. Super useful when editing neighboring files
-vim.keymap.set('n', '<leader>te', ':tabedit <C-r>=escape(expand("%:p:h"), " ")<cr>/')
+vim.keymap.set({ 'n', 'v' }, '<leader>te', ':tabedit <C-r>=escape(expand("%:p:h"), " ")<cr>/')
 -- switch cwd to the directory of the open buffer
-vim.keymap.set('n', '<leader>cd', ':cd %:p:h<cr>:pwd<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>cd', ':cd %:p:h<cr>:pwd<cr>')
 -- move lines of text using ALT+[jk]
 vim.keymap.set('n', '<M-j>', 'mz:m+<cr>`z')
 vim.keymap.set('n', '<M-k>', 'mz:m-2<cr>`z')
 vim.keymap.set('v', '<M-j>', ":m'>+<cr>`<my`>mzgv`yo`z")
 vim.keymap.set('v', '<M-k>', ":m'<-2<cr>`>my`<mzgv`yo`z")
+-- allow block selection with ALT+v when terminals hijack CTRL+v
+vim.keymap.set('', '<M-v>', '<C-v>')
 -- easier spellchecking
 vim.keymap.set('n', '<leader>ss', '<cmd>setlocal spell!<cr>')
 vim.keymap.set('n', '<leader>sn', ']s')
