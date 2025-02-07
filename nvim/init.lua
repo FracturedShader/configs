@@ -137,7 +137,7 @@ vim.keymap.set({ 'n', 'v' }, '<leader>l', '<cmd>bprevious<cr>')
 vim.keymap.set({ 'n', 'v' }, '<leader>tn', '<cmd>tabnew<cr>')
 vim.keymap.set({ 'n', 'v' }, '<leader>to', '<cmd>tabonly<cr>')
 vim.keymap.set({ 'n', 'v' }, '<leader>tc', '<cmd>tabclose<cr>')
-vim.keymap.set({ 'n', 'v' }, '<leader>tm', ':tabmove')
+vim.keymap.set({ 'n', 'v' }, '<leader>tm', ':tabmove ')
 -- Opens a new tab with current buffer's path. Super useful when editing neighboring files
 vim.keymap.set({ 'n', 'v' }, '<leader>te', ':tabedit <C-r>=escape(expand("%:p:h"), " ")<cr>/')
 -- switch cwd to the directory of the open buffer
