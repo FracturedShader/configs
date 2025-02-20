@@ -126,6 +126,9 @@ vim.keymap.set('n', '<right>', ':bn<cr>')
 -- make j and k move by visual line, not actual line, when text is soft-wrapped
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
+-- arrow keys in insert mode are fine for many cases, so move by visual line
+vim.keymap.set('i', '<up>', '<c-o>gk')
+vim.keymap.set('i', '<down>', '<c-o>gj')
 -- close the current buffer
 vim.keymap.set({ 'n', 'v' }, '<leader>bd', '<cmd>bd<cr>')
 -- close all buffers
