@@ -396,22 +396,8 @@ require("lazy").setup({
             end
 
             -- Ruff for Python
-            if not configs.ruff_lsp and vim.fn.executable('ruff-lsp') == 1 then
-                configs.ruff_lsp = {
-                    default_config = {
-                        cmd = { 'ruff-lsp' },
-                        filetypes = { 'python' },
-                        root_dir = require('lspconfig').util.find_git_ancestor,
-                        init_options = {
-                            settings = {
-                                args = {}
-                            }
-                        }
-                    }
-                }
-            end
-            if configs.ruff_lsp then
-                lspconfig.ruff_lsp.setup {}
+            if vim.fn.executable('ruff') == 1 then
+                lspconfig.ruff.setup {}
             end
 
             -- Global mappings.
