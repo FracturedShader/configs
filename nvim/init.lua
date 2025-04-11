@@ -395,9 +395,20 @@ require("lazy").setup({
                 lspconfig.bash_lsp.setup {}
             end
 
-            -- Ruff for Python
-            if vim.fn.executable('ruff') == 1 then
-                lspconfig.ruff.setup {}
+            -- Python LSP Server + Ruff for Python
+            if vim.fn.executable('pylsp') == 1 then
+                lspconfig.pylsp.setup {
+                    settings = {
+                        pylsp = {
+                            plugins = {
+                                ruff = {
+                                    enabled = true,
+                                    formatEnabled = true,
+                                }
+                            }
+                        }
+                    }
+                }
             end
 
             -- Global mappings.
