@@ -38,7 +38,7 @@
 [interactive]
 	diffFilter = delta --color-only
 [merge]
-	conflictstyle = zdiff3  # make merge conflicts contain more info about what changed
+	conflictstyle = diff3   # make merge conflicts contain more info about what changed
 	tool = vimdiff          # I happen to like my NeoVim setup/configs
 	keepbackup = false      # no .orig file since that's already tracked
 [mergetool]
