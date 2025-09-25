@@ -347,11 +347,9 @@ require("lazy").setup({
         'neovim/nvim-lspconfig',
         config = function()
             -- Setup language servers.
-            local lspconfig = require('lspconfig')
-            local configs = require 'lspconfig.configs'
 
             -- Rust
-            lspconfig.rust_analyzer.setup {
+            vim.lsp.config('rust_analyzer', {
                 -- Server-specific settings. See `:help lspconfig-setup`
                 settings = {
                     ["rust-analyzer"] = {
@@ -365,10 +363,11 @@ require("lazy").setup({
                         },
                     },
                 },
-            }
+            })
+            vim.lsp.enable('rust_analyzer')
 
             -- C++ LSP
-            lspconfig.clangd.setup {
+            vim.lsp.config('clangd', {
                 cmd = {
                     -- see clangd --help-hidden
                     "clangd",
@@ -387,30 +386,27 @@ require("lazy").setup({
                     completeUnimported = true,
                     semanticHighlighting = true,
                 },
-            }
+            })
+            vim.lsp.enable('clangd')
 
             -- Bash LSP
-            if not configs.bash_lsp and vim.fn.executable('bash-language-server') == 1 then
-                configs.bash_lsp = {
-                    default_config = {
-                        cmd = { 'bash-language-server', 'start' },
-                        filetypes = { 'sh' },
-                        root_dir = require('lspconfig').util.find_git_ancestor,
-                        init_options = {
-                            settings = {
-                                args = {}
-                            }
+            if vim.fn.executable('bash-language-server') == 1 then
+                vim.lsp.config('bash_lsp', {
+                    cmd = { 'bash-language-server', 'start' },
+                    filetypes = { 'sh' },
+                    root_dir = vim.lsp.config.util.find_git_ancestor,
+                    init_options = {
+                        settings = {
+                            args = {}
                         }
                     }
-                }
-            end
-            if configs.bash_lsp then
-                lspconfig.bash_lsp.setup {}
+                })
+                vim.lsp.enable('bash_lsp')
             end
 
             -- Python LSP Server + Ruff for Python
             if vim.fn.executable('pylsp') == 1 then
-                lspconfig.pylsp.setup {
+                vim.lsp.config('pylsp', {
                     settings = {
                         pylsp = {
                             plugins = {
@@ -421,7 +417,8 @@ require("lazy").setup({
                             }
                         }
                     }
-                }
+                })
+                vim.lsp.enable('pylsp')
             end
 
             -- Global mappings.
