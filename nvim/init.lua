@@ -310,7 +310,8 @@ require("lazy").setup({
     {
         'notjedi/nvim-rooter.lua',
         config = function()
-            require('nvim-rooter').setup()
+            -- Except when there's no filetype, handy for `rg --vimgrep ... | nvim -c cb` when not in project root
+            require('nvim-rooter').setup { exclude_filetypes = { '' } }
         end
     },
     -- fzf support for ^p
