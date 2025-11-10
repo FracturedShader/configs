@@ -16,6 +16,8 @@ vim.opt.smartindent = true
 vim.opt.scrolloff = 2
 -- never show me line breaks if they're not there
 vim.opt.wrap = false
+-- except for markup languages
+vim.api.nvim_create_autocmd('Filetype', { pattern = 'markdown,rst,typst', command = 'setlocal wrap' })
 -- always draw sign column. prevents buffer moving when adding/deleting sign
 vim.opt.signcolumn = 'yes'
 -- sweet sweet relative line numbers
@@ -58,10 +60,8 @@ vim.opt.diffopt:append('iwhite')
 --- https://luppeng.wordpress.com/2020/10/10/when-to-use-each-of-the-git-diff-algorithms/
 vim.opt.diffopt:append('algorithm:histogram')
 vim.opt.diffopt:append('indent-heuristic')
--- show a column at 80 characters as a guide for long lines
-vim.opt.colorcolumn = '80'
---- except in Rust where the rule is 100 characters
-vim.api.nvim_create_autocmd('Filetype', { pattern = 'rust', command = 'set colorcolumn=100' })
+-- show a column at 100 characters as a guide for long lines
+vim.opt.colorcolumn = '100'
 -- show more hidden characters
 -- also, show tabs nicer
 vim.opt.listchars = 'tab:^ ,nbsp:¬,extends:»,precedes:«,trail:•'
@@ -350,45 +350,49 @@ require("lazy").setup({
             -- Setup language servers.
 
             -- Rust
-            vim.lsp.config('rust_analyzer', {
-                -- Server-specific settings. See `:help lspconfig-setup`
-                settings = {
-                    ["rust-analyzer"] = {
-                        cargo = {
-                            allFeatures = true,
-                        },
-                        completion = {
-                            postfix = {
-                                enable = false,
+            if vim.fn.executable('rust-analyzer') == 1 then
+                vim.lsp.config('rust_analyzer', {
+                    -- Server-specific settings. See `:help lspconfig-setup`
+                    settings = {
+                        ["rust-analyzer"] = {
+                            cargo = {
+                                allFeatures = true,
+                            },
+                            completion = {
+                                postfix = {
+                                    enable = false,
+                                },
                             },
                         },
                     },
-                },
-            })
-            vim.lsp.enable('rust_analyzer')
+                })
+                vim.lsp.enable('rust_analyzer')
+            end
 
             -- C++ LSP
-            vim.lsp.config('clangd', {
-                cmd = {
-                    -- see clangd --help-hidden
-                    "clangd",
-                    "--background-index",
-                    -- by default, clang-tidy use -checks=clang-diagnostic-*,clang-analyzer-*
-                    -- to add more checks, create .clang-tidy file in the root directory
-                    -- and add Checks key, see https://clang.llvm.org/extra/clang-tidy/
-                    "--clang-tidy",
-                    "--completion-style=bundled",
-                    "--cross-file-rename",
-                    "--header-insertion=iwyu",
-                },
-                init_options = {
-                    clangdFileStatus = true, -- Provides information about activity on clangd’s per-file worker thread
-                    usePlaceholders = true,
-                    completeUnimported = true,
-                    semanticHighlighting = true,
-                },
-            })
-            vim.lsp.enable('clangd')
+            if vim.fn.executable('clangd') == 1 then
+                vim.lsp.config('clangd', {
+                    cmd = {
+                        -- see clangd --help-hidden
+                        "clangd",
+                        "--background-index",
+                        -- by default, clang-tidy use -checks=clang-diagnostic-*,clang-analyzer-*
+                        -- to add more checks, create .clang-tidy file in the root directory
+                        -- and add Checks key, see https://clang.llvm.org/extra/clang-tidy/
+                        "--clang-tidy",
+                        "--completion-style=bundled",
+                        "--cross-file-rename",
+                        "--header-insertion=iwyu",
+                    },
+                    init_options = {
+                        clangdFileStatus = true, -- Provides information about activity on clangd’s per-file worker thread
+                        usePlaceholders = true,
+                        completeUnimported = true,
+                        semanticHighlighting = true,
+                    },
+                })
+                vim.lsp.enable('clangd')
+            end
 
             -- Bash LSP
             if vim.fn.executable('bash-language-server') == 1 then
@@ -405,21 +409,14 @@ require("lazy").setup({
                 vim.lsp.enable('bash_lsp')
             end
 
-            -- Python LSP Server + Ruff for Python
+            -- Python LSP Server for Python
             if vim.fn.executable('pylsp') == 1 then
-                vim.lsp.config('pylsp', {
-                    settings = {
-                        pylsp = {
-                            plugins = {
-                                ruff = {
-                                    enabled = true,
-                                    formatEnabled = true,
-                                }
-                            }
-                        }
-                    }
-                })
                 vim.lsp.enable('pylsp')
+            end
+
+            -- Typst LSP
+            if vim.fn.executable('typs-lsp') == 1 then
+                vim.lsp.enable('typst_lsp')
             end
 
             -- Global mappings.
