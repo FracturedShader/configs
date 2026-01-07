@@ -415,8 +415,8 @@ require("lazy").setup({
             end
 
             -- Typst LSP
-            if vim.fn.executable('typs-lsp') == 1 then
-                vim.lsp.enable('typst_lsp')
+            if vim.fn.executable('tinymist') == 1 then
+                vim.lsp.enable('tinymist')
             end
 
             -- Typescript LSP Server
