@@ -452,7 +452,6 @@ require("lazy").setup({
                     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
                     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
                     vim.keymap.set('n', 'gh', vim.lsp.buf.typehierarchy, opts)
-                    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
                     vim.keymap.set('n', '<leader>ci', vim.lsp.buf.incoming_calls, opts)
                     vim.keymap.set('n', '<leader>co', vim.lsp.buf.outgoing_calls, opts)
                     vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
