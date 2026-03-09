@@ -10,4 +10,3 @@ These config files depend on some things not included here. Namely:
 - [ripgrep](https://github.com/BurntSushi/ripgrep) for enhanced RegEx search
 - [proximity-sort](https://github.com/jonhoo/proximity-sort) for results sorting
 - [rust-analyzer](https://rust-analyzer.github.io/) for Rust development
-- [ccls](https://github.com/MaskRay/ccls) for C++ development
