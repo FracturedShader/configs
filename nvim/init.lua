@@ -9,6 +9,10 @@ vim.g.mapleader = " "
 --
 -------------------------------------------------------------------------------
 
+-- disable netrw for file viewing since we have nvim-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.opt.foldcolumn = '1'
 -- smarter indenting
 vim.opt.smartindent = true
@@ -33,8 +37,7 @@ vim.opt.undofile = true
 vim.api.nvim_create_autocmd('BufWritePre', { pattern = '/tmp/*', command = 'setlocal noundofile' })
 -- no swapfiles
 vim.opt.swapfile = false
---" Decent wildmenu
--- in completion, when there is more than one match,
+-- Decent wildmenu
 -- list all matches, and only complete to longest common match
 vim.opt.wildmode = 'list:longest'
 -- when opening a file with a command (like :e),
@@ -49,6 +52,8 @@ vim.opt.expandtab = true
 vim.opt.ignorecase = true
 -- unless uppercase in search term
 vim.opt.smartcase = true
+-- preview changes throughout the buffer
+vim.opt.inccommand = "split"
 -- never ever make my terminal beep
 vim.opt.vb = true
 -- more useful diffs (nvim -d)
@@ -84,8 +89,6 @@ vim.keymap.set('n', '<C-q>', ':mks!<CR>:confirm qall<CR>')
 vim.keymap.set('n', '<leader>;', '<cmd>Buffers<cr>')
 -- quick-save
 vim.keymap.set('n', '<leader>w', '<cmd>w<cr>')
--- make missing : less annoying
-vim.keymap.set('n', ';', ':')
 -- smart window navigation
 vim.keymap.set('', '<C-j>', '<C-W>j')
 vim.keymap.set('', '<C-k>', '<C-W>k')
@@ -96,11 +99,6 @@ vim.keymap.set({'n', 'v'}, '<leader><cr>', '<cmd>nohlsearch<cr>', { silent = tru
 -- Jump to start and end of line using the home row keys
 vim.keymap.set('', 'H', '^')
 vim.keymap.set('', 'L', '$')
--- Neat X clipboard integration
--- <leader>p will paste clipboard into buffer
--- <leader>c will copy entire buffer into clipboard
-vim.keymap.set('n', '<leader>p', '<cmd>read !wl-paste<cr>')
-vim.keymap.set('n', '<leader>c', '<cmd>w !wl-copy<cr><cr>')
 -- <leader><leader> toggles between buffers
 vim.keymap.set({ 'n', 'v' }, '<leader><leader>', '<c-^>')
 -- <leader>, shows/hides hidden characters
@@ -114,7 +112,8 @@ vim.keymap.set('n', 'g*', 'g*zz', { silent = true })
 -- "very magic" (less escaping needed) regexes by default
 vim.keymap.set('n', '?', '?\\v')
 vim.keymap.set('n', '/', '/\\v')
-vim.keymap.set('c', '%s/', '%sm/')
+vim.keymap.set('c', '%s/', '%s/\\v')
+vim.keymap.set('c', 's/', 's/\\v')
 -- open new file adjacent to current file
 vim.keymap.set('n', '<leader>o', ':e <C-R>=expand("%:p:h") . "/" <cr>')
 -- no arrow keys --- force yourself to use the home row
@@ -134,8 +133,8 @@ vim.keymap.set({ 'n', 'v' }, '<leader>bd', '<cmd>bd<cr>')
 -- close all buffers
 vim.keymap.set({ 'n', 'v' }, '<leader>ba', '<cmd>bufdo bd<cr>')
 -- navigate buffers directly
-vim.keymap.set({ 'n', 'v' }, '<leader>h', '<cmd>bnext<cr>')
-vim.keymap.set({ 'n', 'v' }, '<leader>l', '<cmd>bprevious<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>bh', '<cmd>bnext<cr>')
+vim.keymap.set({ 'n', 'v' }, '<leader>bl', '<cmd>bprevious<cr>')
 -- Useful mappings for managing tabs
 vim.keymap.set({ 'n', 'v' }, '<leader>tn', '<cmd>tabnew<cr>')
 vim.keymap.set({ 'n', 'v' }, '<leader>to', '<cmd>tabonly<cr>')
@@ -145,11 +144,6 @@ vim.keymap.set({ 'n', 'v' }, '<leader>tm', ':tabmove ')
 vim.keymap.set({ 'n', 'v' }, '<leader>te', ':tabedit <C-r>=escape(expand("%:p:h"), " ")<cr>/')
 -- switch cwd to the directory of the open buffer
 vim.keymap.set({ 'n', 'v' }, '<leader>cd', ':cd %:p:h<cr>:pwd<cr>')
--- move lines of text using ALT+[jk]
-vim.keymap.set('n', '<M-j>', 'mz:m+<cr>`z')
-vim.keymap.set('n', '<M-k>', 'mz:m-2<cr>`z')
-vim.keymap.set('v', '<M-j>', ":m'>+<cr>`<my`>mzgv`yo`z")
-vim.keymap.set('v', '<M-k>', ":m'<-2<cr>`>my`<mzgv`yo`z")
 -- allow block selection with ALT+v when terminals hijack CTRL+v
 vim.keymap.set('', '<M-v>', '<C-v>')
 -- easier spellchecking
@@ -159,6 +153,7 @@ vim.keymap.set('n', '<leader>sp', '[s')
 vim.keymap.set('n', '<leader>sa', 'zg')
 vim.keymap.set('n', '<leader>s?', 'z=')
 -- easier navigation of quickfix list
+vim.keymap.set('n', '<leader>cw', '<cmd>cope<cr>')
 vim.keymap.set('n', '<leader>cc', '<cmd>cc<cr>')
 vim.keymap.set('n', '<leader>cn', '<cmd>cn<cr>')
 vim.keymap.set('n', '<leader>cp', '<cmd>cp<cr>')
@@ -166,6 +161,31 @@ vim.keymap.set('n', '<leader>ca', '<cmd>cabove<cr>')
 vim.keymap.set('n', '<leader>cb', '<cmd>cbelow<cr>')
 vim.keymap.set('n', '<leader>cl', '<cmd>cl<cr>')
 
+-------------------------------------------------------------------------------
+--
+-- configuring diagnostics
+--
+-------------------------------------------------------------------------------
+-- Allow virtual text
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.HINT] = "󰌵",
+            [vim.diagnostic.severity.INFO] = "󰋼",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.ERROR] = "󰅙",
+        },
+        numhl = {
+            [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+            [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+            [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+            [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+        },
+    },
+    virtual_text = true,
+    virtual_lines = { current_line = true },
+    severity_sort = true
+})
 
 -------------------------------------------------------------------------------
 --
@@ -210,6 +230,44 @@ vim.api.nvim_create_autocmd('InsertLeave', { pattern = '*', command = 'set nopas
 -- plugin configuration
 --
 -------------------------------------------------------------------------------
+-- languages without LSP configurations
+local treesitter_hl_langs = {
+    'bibtex',
+    'cmake',
+    'comment',
+    'css',
+    'cuda',
+    'git_config',
+    'gitattributes',
+    'gitignore',
+    'glsl',
+    'hlsl',
+    'html',
+    'ini',
+    'javadoc',
+    'javascript',
+    'json',
+    'just',
+    'make',
+    'printf',
+    'regex',
+    'scss',
+    'sql',
+    'ssh_config',
+    'xml',
+}
+local treesitter_langs = {
+    'bash',
+    'c',
+    'cpp',
+    'python',
+    'rust',
+    'tsx',
+    'typescript',
+    'typst',
+    'yaml',
+    unpack(treesitter_hl_langs)
+}
 -- first, grab the manager
 -- https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -291,13 +349,73 @@ require("lazy").setup({
             )
         end
     },
-    -- quick navigation
+    -- better git integration
     {
-        url = 'https://codeberg.org/andyg/leap.nvim',
-        config = function()
-            vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
-            vim.keymap.set('n',             'S', '<Plug>(leap-from-window)')
-        end
+        'tpope/vim-fugitive'
+    },
+    -- even better git integration
+    {
+        'lewis6991/gitsigns.nvim',
+        opts = {
+            on_attach = function(bufnr)
+                local gitsigns = require('gitsigns')
+
+                -- Navigation
+                vim.keymap.set('n', ']c', function()
+                    if vim.wo.diff then
+                        vim.cmd.normal({']c', bang = true})
+                    else
+                        gitsigns.nav_hunk('next')
+                    end
+                end)
+
+                vim.keymap.set('n', '[c', function()
+                    if vim.wo.diff then
+                        vim.cmd.normal({'[c', bang = true})
+                    else
+                        gitsigns.nav_hunk('prev')
+                    end
+                end)
+
+                -- Actions
+                vim.keymap.set('n', '<leader>hs', gitsigns.stage_hunk)
+                vim.keymap.set('n', '<leader>hr', gitsigns.reset_hunk)
+
+                vim.keymap.set('v', '<leader>hs', function()
+                    gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+                end)
+
+                vim.keymap.set('v', '<leader>hr', function()
+                    gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+                end)
+
+                vim.keymap.set('n', '<leader>hS', gitsigns.stage_buffer)
+                vim.keymap.set('n', '<leader>hR', gitsigns.reset_buffer)
+                vim.keymap.set('n', '<leader>hp', gitsigns.preview_hunk)
+                vim.keymap.set('n', '<leader>hi', gitsigns.preview_hunk_inline)
+
+                vim.keymap.set('n', '<leader>hb', function()
+                    gitsigns.blame_line({ full = true })
+                end)
+
+                vim.keymap.set('n', '<leader>hd', gitsigns.diffthis)
+
+                vim.keymap.set('n', '<leader>hD', function()
+                    gitsigns.diffthis('~')
+                end)
+
+                vim.keymap.set('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
+                vim.keymap.set('n', '<leader>hq', gitsigns.setqflist)
+
+                -- Toggles
+                vim.keymap.set('n', '<leader>gs', gitsigns.toggle_signs)
+                vim.keymap.set('n', '<leader>gb', gitsigns.toggle_current_line_blame)
+                vim.keymap.set('n', '<leader>gW', gitsigns.toggle_word_diff)
+
+                -- Text object
+                vim.keymap.set({'o', 'x'}, 'ih', gitsigns.select_hunk)
+            end
+        }
     },
     -- better %
     {
@@ -306,14 +424,48 @@ require("lazy").setup({
             vim.g.matchup_matchparen_offscreen = { method = "popup" }
         end
     },
+    -- easily surround text with brackets/tags
+    {
+        "kylechui/nvim-surround",
+        version = "^4.0.0", -- Use for stability; omit to use `main` branch for the latest features
+        event = "VeryLazy",
+    },
+    -- quickly seek ahead with multiple characters (enhanced f/F, t/T)
+    {
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        opts = {
+            highlight = { backdrop = false },
+            modes = {
+                char = {
+                    highlight = { backdrop = false },
+                    jump_labels = true,
+                },
+            },
+        },
+        ---@type Flash.Config
+        keys = {
+            { "s", mode = { "n", "x" }, function() require("flash").jump() end, desc = "Flash" },
+            -- `ds` taken by nvim-surround, use 'm' (does nothing in 'o' mode) for "motion"
+            { "m", mode = "o", function() require("flash").jump() end, desc = "Flash" },
+            { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+            { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+            { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+        },
+    },
+    -- move lines/selection around with ALT and home row keys
+    {
+        'nvim-mini/mini.nvim',
+        version = '*'
+    },
     -- auto-cd to root of git project
-    -- 'airblade/vim-rooter'
     {
         'notjedi/nvim-rooter.lua',
-        config = function()
+        opts = {
             -- Except when there's no filetype, handy for `rg --vimgrep ... | nvim -c cb` when not in project root
-            require('nvim-rooter').setup { exclude_filetypes = { '' } }
-        end
+            exclude_filetypes = { '' }
+        },
     },
     -- fzf support for ^p
     {
@@ -344,9 +496,160 @@ require("lazy").setup({
             end, { bang = true, nargs = '?', complete = "dir" })
         end
     },
+    -- File browser tree
+    {
+        'nvim-tree/nvim-tree.lua',
+        opts = {
+            view = {
+                float = {
+                    enable = true,
+                },
+            },
+        },
+        init = function()
+            vim.keymap.set({ 'n', 'v' }, '<leader>nt', '<cmd>NvimTreeFindFile<cr>')
+        end
+    },
+    -- treesitter
+    {
+        'nvim-treesitter/nvim-treesitter',
+        lazy = false,
+        build = 'TSUpdate',
+        branch = 'main',
+        config = function()
+            local ts = require("nvim-treesitter")
+
+            ts.setup({})
+
+            ts.install(treesitter_langs)
+
+            -- treesitter elements all languages benefit from
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = treesitter_langs,
+                callback = function()
+                    -- treesitter-based folding
+                    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+                    vim.wo.foldmethod = 'expr'
+                    -- fully expand folds by default
+                    vim.api.nvim_feedkeys("zR", 'n', false)
+
+                    -- treesitter-based indent
+                    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end,
+            })
+
+            -- languages without semantic highlighting (LSP-based) also get syntax highlighting
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = treesitter_hl_langs,
+                callback = function()
+                    -- enable treesitter highlighting
+                    vim.treesitter.start()
+                end,
+            })
+        end
+    },
+    -- treesitter text objects
+    {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+        },
+        opts = {
+            move = {
+                set_jumps = true,
+            },
+            select = {
+                -- do linewise selection where appropriate
+                selection_modes = {
+                    ['@class.inner'] = 'V',
+                    ['@class.outer'] = 'V',
+                    ['@function.inner'] = 'V',
+                    ['@function.outer'] = 'V',
+                    ['@loop.inner'] = 'V',
+                    ['@loop.outer'] = 'V',
+                },
+                include_surrounding_whitespace = true,
+            },
+        },
+        init = function()
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = treesitter_langs,
+                callback = function()
+                    -- treesitter-based object selection
+                    vim.keymap.set({ "x", "o" }, "am", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "x", "o" }, "im", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+                    end)
+                    vim.keymap.set({ "x", "o" }, "ac", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@class.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "x", "o" }, "ic", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@class.inner", "textobjects")
+                    end)
+                    vim.keymap.set({ "x", "o" }, "as", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
+                    end)
+
+                    -- treesitter-based motions
+                    vim.keymap.set({ "n", "x", "o" }, "]m", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]]", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_start("@class.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]o", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_start({"@loop.inner", "@loop.outer"}, "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]s", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_start("@local.scope", "locals")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]z", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
+                    end)
+
+                    vim.keymap.set({ "n", "x", "o" }, "]M", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "][", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_end("@class.outer", "textobjects")
+                    end)
+
+                    vim.keymap.set({ "n", "x", "o" }, "[m", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[[", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_start("@class.outer", "textobjects")
+                    end)
+
+                    vim.keymap.set({ "n", "x", "o" }, "[M", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[]", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_end("@class.outer", "textobjects")
+                    end)
+
+                    -- Go to either the start or the end, whichever is closer.
+                    vim.keymap.set({ "n", "x", "o" }, "]i", function()
+                        require("nvim-treesitter-textobjects.move").goto_next("@conditional.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[i", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous("@conditional.outer", "textobjects")
+                    end)
+
+                    local ts_repeat_move = require "nvim-treesitter-textobjects.repeatable_move"
+
+                    -- Repeat movement with ; and ,
+                    vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
+                    vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_opposite)
+                end
+            })
+        end
+    },
     -- LSP
     {
-        'neovim/nvim-lspconfig',
+       'neovim/nvim-lspconfig',
         config = function()
             -- Setup language servers.
 
@@ -480,112 +783,35 @@ require("lazy").setup({
     },
     -- LSP-based code-completion
     {
-        "hrsh7th/nvim-cmp",
-        -- load cmp in appropriate contexts
-        event = { "InsertEnter", "CmdlineEnter" },
-        -- these dependencies will only be loaded when cmp loads
-        -- dependencies are always lazy-loaded unless specified otherwise
-        dependencies = {
-            'neovim/nvim-lspconfig',
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-vsnip",
-            "hrsh7th/vim-vsnip",
+        'saghen/blink.cmp',
+        version = '1.*',
+        opts = {
+            completion = {
+                documentation = { auto_show = true },
+                ghost_text = { enabled = true },
+                -- completions without context are just noise
+                trigger = { show_on_keyword = false },
+            },
         },
-        config = function()
-            local cmp = require'cmp'
-            cmp.setup({
-                snippet = {
-                    -- REQUIRED by nvim-cmp. get rid of it once we can
-                    expand = function(args)
-                        vim.fn["vsnip#anonymous"](args.body)
-                    end,
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
-                    ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), {'i'}),
-                    ['<C-n>'] = cmp.mapping({
-                        c = function()
-                            if cmp.visible() then
-                                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-                            else
-                                vim.api.nvim_feedkeys(t('<Down>'), 'n', true)
-                            end
-                        end,
-                        i = function(fallback)
-                            if cmp.visible() then
-                                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-                            else
-                                fallback()
-                            end
-                        end
-                    }),
-                    ['<C-p>'] = cmp.mapping({
-                        c = function()
-                            if cmp.visible() then
-                                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-                            else
-                                vim.api.nvim_feedkeys(t('<Up>'), 'n', true)
-                            end
-                        end,
-                        i = function(fallback)
-                            if cmp.visible() then
-                                cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-                            else
-                                fallback()
-                            end
-                        end
-                    }),
-                    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                    ['<C-Space>'] = cmp.mapping.complete(),
-                    ['<C-e>'] = cmp.mapping.abort(),
-                    -- Accept currently selected item.
-                    -- Set `select` to `false` to only confirm explicitly selected items.
-                    ['<Tab>'] = cmp.mapping({
-                        i = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-                        c = function(fallback)
-                            if cmp.visible() then
-                                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })
-                            else
-                                fallback()
-                            end
-                        end
-                    }),
-                }),
-                sources = cmp.config.sources({
-                    { name = 'nvim_lsp' },
-                }, {
-                    { name = 'path' },
-                }),
-                experimental = {
-                    ghost_text = true,
-                },
-            })
-
-            -- Enable completing paths in :
-            cmp.setup.cmdline(':', {
-                sources = cmp.config.sources({
-                    { name = 'path' }
-                })
-            })
-        end
     },
     -- inline function signatures
     {
         "ray-x/lsp_signature.nvim",
         event = "VeryLazy",
-        opts = {},
-        config = function(_, opts)
-            -- Get signatures (and _only_ signatures) when in argument lists.
-            require "lsp_signature".setup({
-                doc_lines = 0,
-                handler_opts = {
-                    border = "none"
-                },
-            })
-        end
+        -- Get signatures (and _only_ signatures) when in argument lists.
+        opts = {
+            doc_lines = 0,
+            handler_opts = {
+                border = "none"
+            },
+        },
+    },
+    -- better quickfix
+    {
+        'kevinhwang91/nvim-bqf',
+        opts = {
+            ft = 'qf'
+        },
     },
     -- DAP: More flexible debugging beyond just Termdebug
     {
@@ -621,9 +847,6 @@ require("lazy").setup({
                     pid = require('dap.utils').pick_process,
                 }
             }
-
-            -- Override defaults by loading from '.vscode/launch.json' in the current working directory
-            require('dap.ext.vscode').load_launchjs()
 
             -- Leverage Unicode for better indicators
             vim.fn.sign_define('DapBreakpoint', {text='●', texthl='', linehl='', numhl=''})
@@ -720,8 +943,6 @@ require("lazy").setup({
         end
     },
     -- language support
-    -- toml
-    'cespare/vim-toml',
     -- yaml
     {
         "cuducos/yaml.nvim",
@@ -738,7 +959,6 @@ require("lazy").setup({
             vim.g.rustfmt_autosave = 1
             vim.g.rustfmt_emit_files = 1
             vim.g.rustfmt_fail_silently = 0
-            vim.g.rust_clip_command = 'wl-copy'
         end
     },
     -- markdown
@@ -749,8 +969,6 @@ require("lazy").setup({
             'godlygeek/tabular',
         },
         config = function()
-            -- never ever fold!
-            vim.g.vim_markdown_folding_disabled = 1
             -- support front-matter in .md files
             vim.g.vim_markdown_frontmatter = 1
             -- 'o' on a list item should insert at same level
@@ -758,6 +976,16 @@ require("lazy").setup({
             -- don't add bullets when wrapping:
             -- https://github.com/preservim/vim-markdown/issues/232
             vim.g.vim_markdown_auto_insert_bullets = 0
+            -- support for math
+            vim.g.vim_markdown_math = 1
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'markdown' },
+                callback = function()
+                    -- fully expand folds by default
+                    vim.api.nvim_feedkeys("zR", 'n', false)
+                end,
+            })
         end
     },
 })
