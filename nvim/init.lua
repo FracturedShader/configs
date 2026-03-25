@@ -14,6 +14,8 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.opt.foldcolumn = '1'
+-- fully expand folds by default
+vim.opt.foldlevel = 99
 -- smarter indenting
 vim.opt.smartindent = true
 -- keep more context on screen while scrolling
@@ -530,8 +532,6 @@ require("lazy").setup({
                     -- treesitter-based folding
                     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
                     vim.wo.foldmethod = 'expr'
-                    -- fully expand folds by default
-                    vim.api.nvim_feedkeys("zR", 'n', false)
 
                     -- treesitter-based indent
                     vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
@@ -978,14 +978,6 @@ require("lazy").setup({
             vim.g.vim_markdown_auto_insert_bullets = 0
             -- support for math
             vim.g.vim_markdown_math = 1
-
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = { 'markdown' },
-                callback = function()
-                    -- fully expand folds by default
-                    vim.api.nvim_feedkeys("zR", 'n', false)
-                end,
-            })
         end
     },
 })
