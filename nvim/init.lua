@@ -16,6 +16,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.foldcolumn = '1'
 -- fully expand folds by default
 vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
 -- smarter indenting
 vim.opt.smartindent = true
 -- keep more context on screen while scrolling
@@ -591,6 +592,12 @@ require("lazy").setup({
                     vim.keymap.set({ "x", "o" }, "as", function()
                         require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
                     end)
+                    vim.keymap.set({ "x", "o" }, "ae", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@parameter.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "x", "o" }, "ie", function()
+                        require "nvim-treesitter-textobjects.select".select_textobject("@parameter.inner", "textobjects")
+                    end)
 
                     -- treesitter-based motions
                     vim.keymap.set({ "n", "x", "o" }, "]m", function()
@@ -608,12 +615,27 @@ require("lazy").setup({
                     vim.keymap.set({ "n", "x", "o" }, "]z", function()
                         require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
                     end)
+                    vim.keymap.set({ "n", "x", "o" }, "]e", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_start("@parameter.inner", "textobjects")
+                    end)
 
                     vim.keymap.set({ "n", "x", "o" }, "]M", function()
                         require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
                     end)
                     vim.keymap.set({ "n", "x", "o" }, "][", function()
                         require("nvim-treesitter-textobjects.move").goto_next_end("@class.outer", "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]O", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_end({"@loop.inner", "@loop.outer"}, "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]S", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_end("@local.scope", "locals")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]Z", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_end("@fold", "folds")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "]E", function()
+                        require("nvim-treesitter-textobjects.move").goto_next_end("@parameter.inner", "textobjects")
                     end)
 
                     vim.keymap.set({ "n", "x", "o" }, "[m", function()
@@ -622,6 +644,18 @@ require("lazy").setup({
                     vim.keymap.set({ "n", "x", "o" }, "[[", function()
                         require("nvim-treesitter-textobjects.move").goto_previous_start("@class.outer", "textobjects")
                     end)
+                    vim.keymap.set({ "n", "x", "o" }, "[o", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_start({"@loop.inner", "@loop.outer"}, "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[s", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_start("@local.scope", "locals")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[z", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_start("@fold", "folds")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[e", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_start("@parameter.inner", "textobjects")
+                    end)
 
                     vim.keymap.set({ "n", "x", "o" }, "[M", function()
                         require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer", "textobjects")
@@ -629,6 +663,19 @@ require("lazy").setup({
                     vim.keymap.set({ "n", "x", "o" }, "[]", function()
                         require("nvim-treesitter-textobjects.move").goto_previous_end("@class.outer", "textobjects")
                     end)
+                    vim.keymap.set({ "n", "x", "o" }, "[O", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_end({"@loop.inner", "@loop.outer"}, "textobjects")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[S", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_end("@local.scope", "locals")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[Z", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_end("@fold", "folds")
+                    end)
+                    vim.keymap.set({ "n", "x", "o" }, "[E", function()
+                        require("nvim-treesitter-textobjects.move").goto_previous_end("@parameter.inner", "textobjects")
+                    end)
+
 
                     -- Go to either the start or the end, whichever is closer.
                     vim.keymap.set({ "n", "x", "o" }, "]i", function()
