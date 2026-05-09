@@ -292,7 +292,7 @@ require("lazy").setup({
         'morhetz/gruvbox',
         lazy = false, -- load at start
         priority = 1000, -- load first
-        config = function()
+        init = function()
             vim.g.gruvbox_contrast_dark = 'hard'
             vim.o.termguicolors = true
             vim.cmd([[colorscheme gruvbox]])
@@ -315,7 +315,7 @@ require("lazy").setup({
     {
         'itchyny/lightline.vim',
         lazy = false, -- also load at start since it's UI
-        config = function()
+        init = function()
             -- no need to also show mode in cmd line when we have bar
             vim.o.showmode = false
             vim.g.lightline = {
@@ -423,7 +423,7 @@ require("lazy").setup({
     -- better %
     {
         'andymass/vim-matchup',
-        config = function()
+        init = function()
             vim.g.matchup_matchparen_offscreen = { method = "popup" }
         end
     },
@@ -476,7 +476,7 @@ require("lazy").setup({
         dependencies = {
             { 'junegunn/fzf', dir = '~/.fzf', build = './install --all' },
         },
-        config = function()
+        init = function()
             -- stop putting a giant window over my editor
             vim.g.fzf_layout = { down = '~20%' }
             -- when using :Files, pass the file list through
@@ -1002,7 +1002,7 @@ require("lazy").setup({
     {
         'rust-lang/rust.vim',
         ft = { "rust" },
-        config = function()
+        init = function()
             vim.g.rustfmt_autosave = 1
             vim.g.rustfmt_emit_files = 1
             vim.g.rustfmt_fail_silently = 0
@@ -1015,7 +1015,7 @@ require("lazy").setup({
         dependencies = {
             'godlygeek/tabular',
         },
-        config = function()
+        init = function()
             -- support front-matter in .md files
             vim.g.vim_markdown_frontmatter = 1
             -- 'o' on a list item should insert at same level
