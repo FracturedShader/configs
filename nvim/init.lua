@@ -457,10 +457,20 @@ require("lazy").setup({
             { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
         },
     },
-    -- move lines/selection around with ALT and home row keys
+    -- "Swiss Army knife" plugin with a variety of modules
     {
         'nvim-mini/mini.nvim',
-        version = '*'
+        version = '*',
+        config = function()
+            -- better text object selection with a/i
+            require('mini.ai').setup()
+            -- easy comment toggle and treating comments as text objects
+            require('mini.comment').setup()
+            -- move lines/selection around with ALT and home row keys
+            require('mini.move').setup()
+            -- automatically insert closing pairs for brackets/quotes
+            require('mini.pairs').setup()
+        end
     },
     -- auto-cd to root of git project
     {
@@ -504,6 +514,8 @@ require("lazy").setup({
         'nvim-tree/nvim-tree.lua',
         opts = {
             view = {
+                -- using empty object defaults to min width of 30 rather than fixed width of 30
+                width = {},
                 float = {
                     enable = true,
                 },
@@ -836,8 +848,35 @@ require("lazy").setup({
             completion = {
                 documentation = { auto_show = true },
                 ghost_text = { enabled = true },
-                -- completions without context are just noise
-                trigger = { show_on_keyword = false },
+                menu = {
+                    -- only show automatically when an LSP is attached and not in a comment/string
+                    auto_show = function()
+                        if table.getn(vim.lsp.get_clients()) == 0 then
+                            return false
+                        end
+
+                        local success, node = pcall(vim.treesitter.get_node)
+
+                        if success and node then
+                            return not vim.tbl_contains({
+                                'comment',
+                                'line_comment',
+                                'block_comment',
+                                'doc_comment',
+                                'string',
+                                'string_literal',
+                                'raw_string_literal',
+                                'string_content',
+                                'raw_string_content',
+                            }, node:type())
+                        end
+
+                        return true
+                    end
+                },
+            },
+            sources = {
+                --default = { 'lsp', 'snippets', 'path' },
             },
         },
     },
