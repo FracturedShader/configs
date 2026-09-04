@@ -163,6 +163,13 @@ vim.keymap.set('n', '<leader>cp', '<cmd>cp<cr>')
 vim.keymap.set('n', '<leader>ca', '<cmd>cabove<cr>')
 vim.keymap.set('n', '<leader>cb', '<cmd>cbelow<cr>')
 vim.keymap.set('n', '<leader>cl', '<cmd>cl<cr>')
+vim.keymap.set('n', '<leader>lw', '<cmd>lope<cr>')
+vim.keymap.set('n', '<leader>ll', '<cmd>ll<cr>')
+vim.keymap.set('n', '<leader>ln', '<cmd>lne<cr>')
+vim.keymap.set('n', '<leader>lp', '<cmd>lp<cr>')
+vim.keymap.set('n', '<leader>la', '<cmd>labove<cr>')
+vim.keymap.set('n', '<leader>lb', '<cmd>lbelow<cr>')
+vim.keymap.set('n', '<leader>li', '<cmd>lli<cr>')
 
 -------------------------------------------------------------------------------
 --
